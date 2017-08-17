@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<main class="main-container container-fluid">
+    <section class="carousel slide" data-ride="carousel">
+        <h1>Construimos tu sitio web</h1>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block" src="{% static 'rmm_main/img/main00.jpg' %}">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block" src="{% static 'rmm_main/img/main01.jpg' %}">
+            </div>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col-6 col-xl-4 d-none d-sm-block">
+            <img class="section-img" src="{% static 'rmm_main/img/responsive-nobg.png' %}" alt="Accesible desde cualquier dispositivo"/>
+        </div>
+        <div class="col section-text">
+            <h2>Accesible desde cualquier dispositivo</h2>
+            <p>Nuestros diseños son responsive para que se vea de la mejor forma posible desde cualquier dispositivo. No te pierdas ni un cliente con nuestros diseños accesibles.</p>
+        </div>
+    </section>
+    <section class="row">
+        <div class="col section-text">
+            <h2>Totalmente personalizado</h2>
+            <p>Entendemos la web como algo totalmente personal. Por eso no usamos plantillas sinó que diseñamos la mejor web para que se adapte totalmente a las necesidades de nuestros clientes.</p>
+        </div>
+        <div class="col-6 col-xl-4 d-none d-sm-block">
+            <img class="section-img" src="{% static 'rmm_main/img/custom-design.jpg' %}" alt="Diseño totalmente personalizado"/>
+        </div>
+    </section>
+    <section id="section-contact" class="row contact">
+        <div class="col">
+            <h2>Contacto</h2>
+            <div class="container">
+                <div id="contact-form-container" class="form-row alert alert-success">
+                    <div class="col">
+                        <span id="contact-form-message"></span>
+                    </div>
+                </div>
+                <form method="POST" id="contact-form">
+                {% csrf_token %}
+                    <div class="form-group form-row">
+                        <label for="inputName" class="col-sm-2 col-form-label" >Nombre</label>
+                        <div class="col-sm-10">
+                            <input id="inputName" class="form-control" name="{{ contact.name.html_name }}" aria-describedby="emialHelp" placeholder="Tu nombre" value="{{contact.name.value | default_if_none:''}}">
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input id="inputEmail" class="form-control" name="{{ contact.email.html_name }}" type="email" placeholder="Tu email" value="{{contact.email.value| default_if_none:''}}">
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        <label for="inputMessage" class="col-sm-2 col-form-label">Mensaje</label>
+                        <div class="col-sm-10">
+                            <textarea id="inputMessage" class="form-control" name="{{ contact.message.html_name }}" placeholder="Tu mensaje" rows="3">{{contact.message.value | default_if_none:''}}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="col-sm-10 offset-sm-2">
+                            <button type="submit" class="btn btn-dark">Contactar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block endscript %}
+<script>
+    $('#contact-form').on('submit', function(event){
+        event.preventDefault();
+        $.post( "{% url 'rmm_main:contact_submit' %}", $(this).serialize(), function(msg){
+            // handle a successful response
+            console.log(msg)
+            if (msg['errcode'] == 0) {
+                $("#contact-form-message").html(msg['message']);
+                $("#contact-form-container").slideDown();
+                setTimeout(function(){
+                    $("#contact-form-container").slideUp();
+                    $("#contact-form-message").html("");
+                }, 10000);
+            }
+         });
+    });
+
+</script>
+{% endblock %}
