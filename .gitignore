@@ -105,7 +105,6 @@ web_full/secret.py
 .idea/
 .sass-cache/
 node_modules/
-web_full/static/bootstrap-4.0.0-beta-dist/
 web_full/static/bower_components/
 db.sqlite3
 
